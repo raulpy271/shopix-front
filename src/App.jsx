@@ -9,8 +9,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Pages.Home/>}/>
-        <Route path='/compras' element={<div><h1>Página de compras</h1></div>}/>
+        {
+          Pages.map((page, index) => <Route key={index} path={page.path} element={<page.component/>}/>)
+        }
       </Routes>
     </BrowserRouter>
   );
