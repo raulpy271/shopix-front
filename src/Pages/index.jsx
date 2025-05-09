@@ -2,7 +2,7 @@
 import Home from './Home';
 import Compras from './Compras';
 import Login from './Auth/Login';
-import Template from '../Layouts/Template';
+import Cadastrar from './Auth/Cadastrar';
 
 const Pages = [
   {
@@ -17,6 +17,10 @@ const Pages = [
     'path': '/compras',
     'component': Compras,
   },
+  {
+    'path': '/cadastrar',
+    'component': Cadastrar
+  }
 ];
 
 export default Pages;
