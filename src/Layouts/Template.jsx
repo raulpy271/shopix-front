@@ -1,13 +1,16 @@
 
-import Navbar from '../Components/Navbar';
+import Navbar from '@Components/Navbar';
+import {willRedirectToLogin, RedirectComponent} from '@Components/Auth';
 
-export default function Template({ children }) {
+const Template = ({ children }) => {
   return (
     <>
       <Navbar/>
       <div className="p-10">
-        {children}
+        {(willRedirectToLogin()) ? RedirectComponent() : children}
       </div>
     </>
   )
 }
+
+export default Template;
