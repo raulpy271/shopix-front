@@ -44,7 +44,7 @@ export function UserSideNavbar({me}) {
         (me && me.username) ? (
           <>
             <NavbarLink href="/me">
-              <img src="/src/assets/user.svg" className="inline mr-4 h-6"/>
+              <img src="/src/assets/user.svg" className="inline mr-4 h-6 dark:invert-60 invert-30"/>
               {me?.username}
             </NavbarLink>
             <NavbarLink href="#" onClick={logout}>
