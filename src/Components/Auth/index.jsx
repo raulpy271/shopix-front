@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 import api from '@Controllers/api'
 
 
-const loggedPages = ['/', '/compras'];
+const loggedPages = ['/', '/compras', '/me'];
 
 export async function getMe() {
   const token = Cookies.get('token');
