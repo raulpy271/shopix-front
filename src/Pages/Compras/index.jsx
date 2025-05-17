@@ -1,13 +1,88 @@
 import Template from '../../Layouts/Template';
+import { Accordion, AccordionContent, AccordionPanel, AccordionTitle } from "flowbite-react";
+import { useEffect, useState } from 'react';
+import api, {getProduct} from '@Controllers/api';
+import storage from '@Controllers/storage';
+
+
+export function CompraItem({item}) {
+  const product = item["product"];
+  return (
+    <div className="text-gray-800 dark:text-white py-2 px-5 flex justify-center">
+      <div className="px-5 w-100">
+        <h3 className="text-lg">
+          Produto: {product["name"]}
+        </h3>
+        <div className="p-2">
+          <p>Quantidade: {item["quantity"]}</p>
+          <p>Subtotal: {item["subtotal"]}</p>
+          <p>Variação: {Object.keys(item["var"]["options"]).map(key => key + ": " + item["var"]["options"][key] + ". ") }</p>
+        </div>
+      </div>
+      <div className="px-20">
+        <img src={storage(`/product/${product["id"]}`)} className="w-26 h-26"/>
+      </div>
+    </div>
+  )
+}
+
+export function Resumo({compra}) {
+  return (
+    <div className="text-gray-800 dark:text-white py-3">
+      <h3 className="text-lg font-bold">
+        Resumo da compra: 
+      </h3>
+      <div className="p-2 text-lg">
+        <p>Valor total: {compra["totalPrice"]}</p>
+        <p>Status: {compra["status"]}</p>
+        <p>Método de pagamento: {compra["paymentMethod"]}</p>
+        <p>Rastreio: {compra["trackingCode"]}</p>
+      </div>
+    </div>
+  )
+}
 
 export default function Compras() {
+  const [orders, setOrders] = useState(null);
+
+  useEffect(() => {
+    if (!orders) {
+      api.get('/orders').then((res) => {
+        const promises = [];
+        const ordersRes = res.data;
+        for (let order of ordersRes) {
+          for (let item of order["items"]) {
+            promises.push(
+              getProduct(item["var"]["product_id"])
+                .then((prod) => item["product"] = prod)
+            );
+          }
+        }
+        Promise.all(promises).then(ps => {
+          console.log(ordersRes);
+          setOrders(ordersRes);
+        });
+      })
+    }
+  }, [orders]);
   return (
-    <div>
-      <Template>
-        <h1>Página de Compras</h1>
-        <h1>sem copilot</h1>
-      </Template>
-    </div>
+    <Template>
+      <div className="w-3/4 relative inset-1/8">
+        <h2 className="text-center p-2 text-lg font-bold dark:text-gray-800">Suas compras:</h2>
+        <Accordion>
+          {orders ? orders.map((order) => 
+            <AccordionPanel key={order.id}>
+              <AccordionTitle>Pedido #{order.id}</AccordionTitle>
+              <AccordionContent>
+                <Resumo compra={order}/>
+                <hr className="my-2 text-gray-800 dark:text-white"/>
+                {order["items"].map((item) => <CompraItem key={item.id} item={item}/>)}
+              </AccordionContent>
+            </AccordionPanel>
+          ) : null}
+        </Accordion>
+      </div>
+    </Template>
   )
 }
 

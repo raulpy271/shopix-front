@@ -17,4 +17,12 @@ API.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
+export async function getProduct(id) {
+  return API.get(`/products/${id}`).then(res => res.data);
+}
+
+export async function getProductImages(id) {
+  return API.get(`/products/${id}/images`).then(res => res.data);
+}
+
 export default API;
