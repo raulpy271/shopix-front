@@ -1,6 +1,7 @@
 
 import Home from './Home';
 import Compras from './Compras';
+import Produto from './Produto';
 import Me from './Me';
 import Login from './Auth/Login';
 import Cadastrar from './Auth/Cadastrar';
@@ -25,6 +26,10 @@ const Pages = [
   {
     'path': '/me',
     'component': Me
+  },
+  {
+    'path': '/produto/:id',
+    'component': Produto
   }
 ];
 

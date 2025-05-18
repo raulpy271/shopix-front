@@ -2,3 +2,12 @@
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
 
+a {
+  @apply text-sky-400 dark:text-blue-700 hover:text-blue-400
+}
+
+nav a {
+  @apply text-white dark:text-white hover:text-blue-400
+
+}
+

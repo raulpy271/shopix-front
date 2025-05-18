@@ -11,7 +11,7 @@ export function CompraItem({item}) {
     <div className="text-gray-800 dark:text-white py-2 px-5 flex justify-center">
       <div className="px-5 w-100">
         <h3 className="text-lg">
-          Produto: {product["name"]}
+          Produto: <a href={`/produto/${product["id"]}`}>{product["name"]}</a>
         </h3>
         <div className="p-2">
           <p>Quantidade: {item["quantity"]}</p>
@@ -19,9 +19,9 @@ export function CompraItem({item}) {
           <p>Variação: {Object.keys(item["var"]["options"]).map(key => key + ": " + item["var"]["options"][key] + ". ") }</p>
         </div>
       </div>
-      <div className="px-20">
-        <img src={storage(`/product/${product["id"]}`)} className="w-26 h-26"/>
-      </div>
+      <a className="px-20" href={`/produto/${product["id"]}`}>
+        <img src={storage(`/product/${product["id"]}`)} className="h-26 w-26" />
+      </a>
     </div>
   )
 }
