@@ -3,6 +3,7 @@ import {useState, useEffect} from 'react';
 import { useMatch } from 'react-router-dom'
 import { Navbar as Nav, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
 import {getMe, logout} from '@Components/Auth';
+import storage from '@Controllers/storage';
 
 
 export function Navbar() {
@@ -18,7 +19,7 @@ export function Navbar() {
   return (
     <Nav fluid rounded>
       <NavbarBrand href="/">
-        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Shopix</span>
+        <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white pl-10">Shopix</span>
       </NavbarBrand>
       <NavbarToggle />
       <NavbarCollapse>
@@ -44,11 +45,11 @@ export function UserSideNavbar({me}) {
         (me && me.username) ? (
           <>
             <NavbarLink href="/me">
-              <img src="/src/assets/user.svg" className="inline mr-4 h-6 dark:invert-60 invert-30"/>
+              <img src={storage(`/user/${me["id"]}`)} className="inline mr-3 w-7 h-7 rounded-xl"/>
               {me?.username}
             </NavbarLink>
             <NavbarLink href="#" onClick={logout}>
-              Logout
+              <p className="pr-10">Logout</p>
             </NavbarLink>
           </>
         ) : (
@@ -57,7 +58,7 @@ export function UserSideNavbar({me}) {
               Login
             </NavbarLink>
             <NavbarLink href="/cadastrar" active={ useMatch("/cadastrar") != null }>
-              Cadastrar
+               <p className="pr-10">Cadastrar</p>
             </NavbarLink>
           </>
         )
