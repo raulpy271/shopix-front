@@ -67,7 +67,7 @@ export default function Compras() {
   }, [orders]);
   return (
     <Template>
-      <div className="w-3/4 relative inset-1/8">
+      <div className="w-3/4">
         <h2 className="text-center p-2 text-lg font-bold dark:text-gray-800">Suas compras:</h2>
         <Accordion>
           {orders ? orders.map((order) => 

@@ -8,7 +8,7 @@ const Template = ({ children }) => {
   return (
     <ThemeProvider theme={Theme}>
       <Navbar/>
-      <div className="p-10">
+      <div className="p-10 flex justify-center">
         {(willRedirectToLogin()) ? RedirectComponent() : children}
       </div>
     </ThemeProvider>

@@ -21,8 +21,16 @@ export async function getProduct(id) {
   return API.get(`/products/${id}`).then(res => res.data);
 }
 
+export async function getProducts() {
+  return API.get(`/products`).then(res => res.data);
+}
+
 export async function getProductImages(id) {
   return API.get(`/products/${id}/images`).then(res => res.data);
+}
+
+export async function getProductReviews(id) {
+  return API.get(`/reviews/product/${id}`).then(res => res.data);
 }
 
 export default API;
