@@ -33,4 +33,13 @@ export async function getProductReviews(id) {
   return API.get(`/reviews/product/${id}`).then(res => res.data);
 }
 
+export async function getProductPromotions(id) {
+  return API.get(`/promotions/product/${id}`).then(res => res.data);
+}
+
+export async function getPromotions() {
+  return API.get(`/promotions`).then(res => res.data);
+
+}
+
 export default API;

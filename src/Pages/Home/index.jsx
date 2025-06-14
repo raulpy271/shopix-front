@@ -1,9 +1,10 @@
 
-import { money } from '@Components/Format';
+import Price from '@Components/Price';
+import RatingComp from '@Components/Rating';
 import { Card } from "flowbite-react";
 import Template from '../../Layouts/Template';
 import { useEffect, useState } from 'react';
-import api, {getProducts} from '@Controllers/api';
+import api, {getProducts, getPromotions} from '@Controllers/api';
 import storage from '@Controllers/storage';
 
 export default function Home() {
@@ -14,12 +15,34 @@ export default function Home() {
     if (products.length == 0) {
       getProducts().then((data) => {
         const categoriasSet = new Set();
-        console.log(data)
         for (const product of data) {
           categoriasSet.add(product.category);
         }
         setProducts(data);
         setCategorias(Array.from(categoriasSet));
+        return data;
+      }).then((productsData) => {
+        getPromotions().then((data) => {
+          const promotionsIdx = {};
+          for (const prom of data) {
+            promotionsIdx[prom.product_id] = prom;
+          }
+          const newProducts = []
+          console.log(promotionsIdx)
+          for (const product of productsData) {
+            product.promotion = promotionsIdx[product.id];
+            if (promotionsIdx[product.id]) {
+              newProducts.push({
+                ...product,
+                promotion: promotionsIdx[product.id]
+              });
+            } else {
+              newProducts.push(product);
+            }
+          }
+          console.log(productsData);
+          setProducts(productsData);
+        });
       });
     }
   }, [products]);
@@ -34,13 +57,14 @@ export default function Home() {
             products
               .filter(p => p.category === categoria || !categoria)
               .map((p, i) => 
-                <Card key={i} className="w-70 h-80 m-2" href={`/produto/${p["id"]}`}>
-                  <div>
-                    <img src={storage(`/product/${p["id"]}`)} className="w-55 h-55" />
+                <Card key={i} className="w-65 h-80 m-2" href={`/produto/${p["id"]}`}>
+                  <div className="flex justify-center">
+                    <img src={storage(`/product/${p["id"]}`)} className="w-50 h-50" />
                   </div>
-                  <div className="flex flex-row justify-between">
+                  <div>
                     <p>{p.name}</p>
-                    <p>{money(p.price)}</p>
+                    <RatingComp rate={p.rating} total={5}/>
+                    <Price product={p}/>
                   </div>
                 </Card>
               )
