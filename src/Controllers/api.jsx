@@ -39,7 +39,18 @@ export async function getProductPromotions(id) {
 
 export async function getPromotions() {
   return API.get(`/promotions`).then(res => res.data);
+}
 
+export async function getMyCart() {
+  return API.get('/carts/my').then(res => res.data);
+}
+
+export async function addCartItem(data) {
+  return API.post('/carts/addItem', data).then(res => res.data);
+}
+
+export async function removeCartItem(item_id) {
+  return API.delete(`/carts/removeItem/${item_id}`).then(res => res.data);
 }
 
 export default API;

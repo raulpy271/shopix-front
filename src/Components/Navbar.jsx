@@ -4,15 +4,18 @@ import { useMatch } from 'react-router-dom'
 import { Navbar as Nav, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
 import {getMe, logout} from '@Components/Auth';
 import storage from '@Controllers/storage';
+import {getMyCart} from '@Controllers/api';
 
 
-export function Navbar() {
+export function Navbar({cart, setCart}) {
   const [me, setMe] = useState(null);
   useEffect(() => {
     (async () => {
       if (!me) {
         const meRes = await getMe();
         setMe(meRes);
+        const cartRes = await getMyCart();
+        setCart(cartRes);
       }
     })();
   }, [me]);
@@ -32,18 +35,21 @@ export function Navbar() {
       </NavbarCollapse>
       <NavbarToggle />
       <NavbarCollapse>
-        <UserSideNavbar me={me}/>
+        <UserSideNavbar me={me} cart={cart}/>
       </NavbarCollapse>
     </Nav>
   );
 }
 
-export function UserSideNavbar({me}) {
+export function UserSideNavbar({me, cart}) {
   return (
     <>
       {
         (me && me.username) ? (
           <>
+            <NavbarLink href="/carrinho">
+              <p> 🛒 Carrinho ({cart ? cart.items.length : 0}) </p>
+            </NavbarLink>
             <NavbarLink href="/me">
               <img src={storage(`/user/${me["id"]}`)} className="inline mr-3 w-7 h-7 rounded-xl"/>
               {me?.username}
