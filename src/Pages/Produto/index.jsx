@@ -3,16 +3,20 @@ import { useParams } from "react-router-dom";
 import Template from '../../Layouts/Template';
 import Price from '@Components/Price';
 import RatingComp from '@Components/Rating';
+import IncButton from '@Components/IncButton';
 import { useEffect, useState } from 'react';
-import { Carousel, Avatar, List, ListItem, Rating, RatingStar, Select } from "flowbite-react";
-import api, {getProduct, getProductImages, getProductReviews, getProductPromotions} from '@Controllers/api';
+import { toast } from 'react-toastify';
+import { Carousel, Avatar, List, ListItem, Select, Button, Toast, ToastToggle } from "flowbite-react";
+import api, {getProduct, getProductImages, getProductReviews, getProductPromotions, addCartItem} from '@Controllers/api';
 import storage from '@Controllers/storage';
 
 export default function Produto() {
   const params = useParams();
   const product_id = params.id;
+  const [cart, setCart] = useState(null);
   const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
+  const [addResult, setAddResult] = useState(null);
   useEffect(() => {
     if (images.length == 0) {
       getProductImages(product_id).then((data) => {
@@ -39,8 +43,21 @@ export default function Produto() {
       });
     }
   }, [product]);
+  const handleSubmit = async (e) => {
+    const qtd = document.querySelector('button#qtd');
+    const vars = document.querySelector('select#vars');
+    const data = {
+      quantity: Number(qtd.textContent),
+      product_variation_id: Number(vars.options[vars.selectedIndex].id)
+    }
+    data.subtotal = data.quantity * product.price * (product?.promotion ? (1 - product.promotion.discountPercentage) : 1);
+    const cartRes = await addCartItem(data);
+    setCart(cartRes);
+    setAddResult(cartRes);
+    toast(' ✅ Item adicionado.');
+  }
   return (
-    <Template>
+    <Template cart={cart} setCart={setCart}>
       <div className="w-3/4 relative flex flex-wrap justify-center">
         <div className="px-5 h-80 w-80 sm:h-40 sm:w-40 xl:h-100 xl:w-100">
           <Carousel>
@@ -67,19 +84,15 @@ export default function Produto() {
             </Select>
           </div>
           <div className="py-2">
-            Seleciona a quantidade de itens:
-            <Select id="qtd" required>
-              {
-                Array(product?.stock).fill(0, 0, product?.stock).map((v, i) => 
-                  <option key={i + 1} id={i + 1}>{i + 1} produtos.</option>
-                )
-              }
-            </Select>
+            Quantidade: <IncButton valueId="qtd" min={1} max={product?.stock} startValue={1}/>
           </div>
           <div>
             {
-              product ? <Price product={product}/> : "R$ 00,00"
+              product ? <Price product={product} details/> : "R$ 00,00"
             }
+          </div>
+          <div className="py-2">
+            <Button onClick={handleSubmit}> 🛒 Adicionar</Button>
           </div>
         </div>
         <div className="p-5 w-2/3">
