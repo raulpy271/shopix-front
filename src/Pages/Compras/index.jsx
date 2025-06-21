@@ -1,5 +1,7 @@
 import Template from '../../Layouts/Template';
 import { Accordion, AccordionContent, AccordionPanel, AccordionTitle } from "flowbite-react";
+import { paymentMethod, orderStatus } from "@Components/Consts";
+import { money } from '@Components/Format';
 import { useEffect, useState } from 'react';
 import api, {getProduct} from '@Controllers/api';
 import storage from '@Controllers/storage';
@@ -15,7 +17,7 @@ export function CompraItem({item}) {
         </h3>
         <div className="p-2">
           <p>Quantidade: {item["quantity"]}</p>
-          <p>Subtotal: {item["subtotal"]}</p>
+          <p>Subtotal: {money(item["subtotal"])}</p>
           <p>Variação: {Object.keys(item["var"]["options"]).map(key => key + ": " + item["var"]["options"][key] + ". ") }</p>
         </div>
       </div>
@@ -33,9 +35,9 @@ export function Resumo({compra}) {
         Resumo da compra: 
       </h3>
       <div className="p-2 text-lg">
-        <p>Valor total: {compra["totalPrice"]}</p>
-        <p>Status: {compra["status"]}</p>
-        <p>Método de pagamento: {compra["paymentMethod"]}</p>
+        <p>Valor total: {money(compra["totalPrice"])}</p>
+        <p>Status: {orderStatus[compra["status"]]}</p>
+        <p>Método de pagamento: {paymentMethod[compra["paymentMethod"]]}</p>
         <p>Rastreio: {compra["trackingCode"]}</p>
       </div>
     </div>
