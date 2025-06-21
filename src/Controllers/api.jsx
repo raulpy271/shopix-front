@@ -6,8 +6,21 @@ const API = axios.create({
   baseURL: 'http://localhost:8080/api',
 })
 
+export const storagePost = axios.create({
+  baseURL: 'http://localhost:8080/storage',
+})
 
 API.interceptors.request.use(function (config) {
+  const token = Cookies.get('token')
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`
+  }
+  return config;
+  }, function (error) {
+    return Promise.reject(error);
+});
+
+storagePost.interceptors.request.use(function (config) {
   const token = Cookies.get('token')
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`
@@ -51,6 +64,14 @@ export async function addCartItem(data) {
 
 export async function removeCartItem(item_id) {
   return API.delete(`/carts/removeItem/${item_id}`).then(res => res.data);
+}
+
+export async function buy(data) {
+  return API.post('/orders/buy', data).then(res => res.data);
+}
+
+export async function getAddresses() {
+  return API.get('/users/addresses').then(res => res.data);
 }
 
 export default API;

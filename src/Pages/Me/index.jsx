@@ -1,10 +1,11 @@
 
 import Template from '../../Layouts/Template';
 import { toast } from 'react-toastify';
-import { Card, Label, Button, TextInput} from "flowbite-react";
+import { Card, Label, Button, TextInput, Avatar, FileInput } from "flowbite-react";
 import useForm from '@Components/UseForm';
+import storage from '@Controllers/storage';
 import {getMe} from '@Components/Auth';
-import {getAddresses } from '@Controllers/api';
+import { storagePost, getAddresses } from '@Controllers/api';
 import { useEffect, useState } from 'react';
 
 export default function Me() {
@@ -26,7 +27,7 @@ export default function Me() {
       <Template>
         <div className="flex flex-col">
           <div>
-            <Card href="#" className="max-w-sm">
+            <Card>
               <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                 Página do usuário <span className="text-green-900 dark:text-green-400">{me?.username}</span>
               </h5>
@@ -37,6 +38,31 @@ export default function Me() {
                 Email: <span className="text-gray-900 dark:text-white">{me?.email}</span>
               </p>
             </Card>
+            <div className="py-5">
+              <Avatar img={storage(`/user/${me?.id}`)} size="xl"  status="online" rounded bordered/>
+              <form method="post" action={storage('/upload/user')}>
+                <Label className="text-lg font-bold dark:text-black text-white" htmlFor="avatar-upload">
+                  Atualizar avatar:
+                </Label>
+                <div className="flex flex-row gap-2">
+                  <FileInput id="file" name="file"/>
+                  <Button onClick={() => {
+                    const form = new FormData();
+                    form.append("resource_id", me?.id);
+                    form.append("override", true);
+                    form.append("file", document.querySelector('input#file').files[0]);
+                    storagePost.post('/upload/user', form)
+                    .then(res => {
+                      toast("Imagem enviada com sucesso!");
+                      setTimeout(() => window.location = '/me', 1000);
+                    })
+                  }}
+                  >
+                    Enviar!
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
           <div className="pt-5">
             <Address addresses={addresses} setAddresses={setAddresses}/>
@@ -71,7 +97,7 @@ export function Address({addresses, setAddresses}) {
     <div>
       <div>
         {
-          addresses ?
+          addresses && addresses.length ?
             <div>
               <h2 className="text-lg font-bold">Seus endereços:</h2>
                 {
