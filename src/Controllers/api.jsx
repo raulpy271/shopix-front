@@ -74,4 +74,9 @@ export async function getAddresses() {
   return API.get('/users/addresses').then(res => res.data);
 }
 
+export async function sendRevisao(data) {
+  return API.post('/reviews', data).then(res => res.data);
+
+}
+
 export default API;

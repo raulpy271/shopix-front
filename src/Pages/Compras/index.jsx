@@ -1,14 +1,28 @@
 import Template from '../../Layouts/Template';
-import { Accordion, AccordionContent, AccordionPanel, AccordionTitle } from "flowbite-react";
+import { toast } from 'react-toastify';
+import { Accordion, AccordionContent, AccordionPanel, AccordionTitle, Button, Textarea } from "flowbite-react";
 import { paymentMethod, orderStatus } from "@Components/Consts";
+import { RatingInput } from "@Components/Rating";
 import { money } from '@Components/Format';
 import { useEffect, useState } from 'react';
-import api, {getProduct} from '@Controllers/api';
+import api, {getProduct, sendRevisao } from '@Controllers/api';
 import storage from '@Controllers/storage';
 
 
 export function CompraItem({item}) {
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
   const product = item["product"];
+  const submitRevisao = async () => {
+    const textarea = document.getElementById('review-text-area-' + item["id"]);
+    const data = {
+      rating,
+      comment: comment,
+      var_id: item["var"]["id"],
+    };
+    await sendRevisao(data);
+    toast("Revisão enviada com sucesso!");
+  };
   return (
     <div className="text-gray-800 dark:text-white py-2 px-5 flex justify-center">
       <div className="px-5 w-100">
@@ -19,6 +33,16 @@ export function CompraItem({item}) {
           <p>Quantidade: {item["quantity"]}</p>
           <p>Subtotal: {money(item["subtotal"])}</p>
           <p>Variação: {Object.keys(item["var"]["options"]).map(key => key + ": " + item["var"]["options"][key] + ". ") }</p>
+        </div>
+        <div >
+          <div className="flex flex-row gap-x-3 items-center">
+            <h3 className="font-bold">Revisão:</h3>
+            <RatingInput selected={rating} setSelected={setRating} total={5}/>
+            <Button size="xs" onClick={submitRevisao}>Enviar revisão</Button>
+          </div>
+          <div className="py-2">
+            <Textarea placeholder="Deixe seu comentário..." required rows={2} value={comment} onChange={e => setComment(e.target.value)}/>
+          </div>
         </div>
       </div>
       <a className="px-20" href={`/produto/${product["id"]}`}>
@@ -49,7 +73,7 @@ export default function Compras() {
 
   useEffect(() => {
     if (!orders) {
-      api.get('/orders').then((res) => {
+      api.get('/orders/my').then((res) => {
         const promises = [];
         const ordersRes = res.data;
         for (let order of ordersRes) {
