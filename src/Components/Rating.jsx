@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Rating, RatingStar } from "flowbite-react";
 
-export default function RatingComp({rate, total}) {
+export default function RatingComp({rate, total, size = "sm"}) {
   const stars = [];
   if (total) {
     total = 5;
@@ -15,13 +15,13 @@ export default function RatingComp({rate, total}) {
   }
   for (let i = 0; i < total; i++) {
     if (i < rate) {
-      stars.push(<RatingStar key={i}/>)
+      stars.push(<RatingStar key={i} size={size}/>)
     } else {
-      stars.push(<RatingStar key={i} filled={false}/>)
+      stars.push(<RatingStar key={i} filled={false} size={size}/>)
     }
   }
   return (
-    <Rating>
+    <Rating size={size}>
       {stars}
     </Rating>
   )

@@ -15,8 +15,8 @@ export default function Produto() {
   const product_id = params.id;
   const [cart, setCart] = useState(null);
   const [product, setProduct] = useState(null);
+  const [stock, setStock] = useState(0);
   const [images, setImages] = useState([]);
-  const [addResult, setAddResult] = useState(null);
   useEffect(() => {
     if (images.length == 0) {
       getProductImages(product_id).then((data) => {
@@ -30,6 +30,9 @@ export default function Produto() {
       getProduct(product_id).then((data) => {
         console.log(data)
         setProduct(data);
+        if (data?.vars?.length > 0) {
+          setStock(data.vars[0].stock);
+        }
       });
     }
   }, [product]);
@@ -48,12 +51,12 @@ export default function Produto() {
     const vars = document.querySelector('select#vars');
     const data = {
       quantity: Number(qtd.textContent),
-      product_variation_id: Number(vars.options[vars.selectedIndex].id)
+      product_variation_id: Number(vars.options[vars.selectedIndex].id),
+      promotion_id: product?.promotion?.id,
     }
     data.subtotal = data.quantity * product.price * (product?.promotion ? (1 - product.promotion.discountPercentage) : 1);
     const cartRes = await addCartItem(data);
     setCart(cartRes);
-    setAddResult(cartRes);
     toast(' ✅ Item adicionado.');
   }
   return (
@@ -73,18 +76,31 @@ export default function Produto() {
           <h1 className="py-2 text-2xl font-bold">{product?.name}</h1>
           <p>Categoria: {product?.category}</p>
           <p>Marca: {product?.brand}</p>
+          <p>Estoque: {stock}</p>
           <div className="py-2">
             Seleciona e variação:
-            <Select id="vars" required>
+            <Select
+              id="vars"
+              required
+              onChange={e => {
+                const pvar = product?.vars[e.target.selectedIndex];
+                setStock(pvar.stock);
+              }}
+            >
               {
-                product?.vars?.map(v =>
-                  <option key={v.id} id={v.id}>{Object.keys(v.options).map(key => key + ": " + v.options[key] + ".")}</option>
+                product?.vars?.map((v, i) =>
+                  <option key={i} id={v.id}>{Object.keys(v.options).map(key => key + ": " + v.options[key] + ".")}</option>
                 )
               }
             </Select>
           </div>
           <div className="py-2">
-            Quantidade: <IncButton valueId="qtd" min={1} max={product?.stock} startValue={1}/>
+            Quantidade: <IncButton
+                          valueId="qtd"
+                          min={1}
+                          max={stock}
+                          startValue={1}
+                        />
           </div>
           <div>
             {
@@ -92,11 +108,19 @@ export default function Produto() {
             }
           </div>
           <div className="py-2">
-            <Button onClick={handleSubmit}> 🛒 Adicionar</Button>
+            {
+              stock > 0 ?
+                <Button onClick={handleSubmit}> 🛒 Adicionar</Button>
+                : <Button disabled> Não há estoque disponível </Button>
+            }
           </div>
         </div>
         <div className="p-5 w-2/3">
-          <h1 className="py-2 text-2xl font-bold">Reviews</h1>
+          <div className="py-5 flex flex-row gap-2 items-center">
+            <h1 className="text-2xl pr-5 font-bold">Avaliações</h1>
+            <RatingComp rate={product?.rating} total={5} size="md"/>
+            <h1 className="text-lg font-bold text-gray-400 dark:text-gray-500">{product?.rating?.toFixed(2)} de 5</h1> 
+          </div>
           <Reviews/>
         </div>
       </div>
@@ -130,7 +154,9 @@ export function Reviews() {
                 </div>
                 <RatingComp rate={review.rating} total={5}/>
               </div>
-              <div>{review.comment}</div>
+              <div>
+                <p className="text-black">{review.comment}</p>
+              </div>
             </ListItem>
           )
           :
