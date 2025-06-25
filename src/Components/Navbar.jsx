@@ -22,7 +22,9 @@ export function Navbar({cart, setCart}) {
   return (
     <Nav fluid rounded>
       <NavbarBrand href="/">
-        <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white pl-10">Shopix</span>
+
+        <img src="/shopix-logo.png" className="ml-10 h-6 sm:h-9" alt="Shopix Logo" />
+        <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white pl-2">Shopix</span>
       </NavbarBrand>
       <NavbarToggle />
       <NavbarCollapse>

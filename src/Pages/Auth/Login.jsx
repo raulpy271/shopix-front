@@ -29,7 +29,7 @@ export default function Login() {
   return (
     <div>
       <Template>
-        <div className="grid justify-center align-center">
+        <div className="grid justify-center align-center pb-10">
           <h2 className="text-lg font-bold">Realize login na Shopix</h2>
           <br/>
           <form className="flex w-md flex-col justify-center">

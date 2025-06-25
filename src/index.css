@@ -8,7 +8,9 @@ a {
 
 nav a {
   @apply text-white dark:text-white hover:text-blue-400
-
+}
+footer a {
+  @apply text-white dark:text-white hover:text-blue-400
 }
 
 div .price [data-testid=flowbite-tooltip-target] {
