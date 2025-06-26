@@ -76,7 +76,10 @@ export async function getAddresses() {
 
 export async function sendRevisao(data) {
   return API.post('/reviews', data).then(res => res.data);
+}
 
+export async function createProduct(data) {
+  return API.post('/products', data).then(res => res.data);
 }
 
 export default API;
