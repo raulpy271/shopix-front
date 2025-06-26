@@ -89,7 +89,7 @@ export default function Produto() {
             >
               {
                 product?.vars?.map((v, i) =>
-                  <option key={i} id={v.id}>{Object.keys(v.options).map(key => key + ": " + v.options[key] + ".")}</option>
+                  <option key={i} id={v.id}>{Object.keys(v.options).map(key => key + ": " + v.options[key] + ". ")}</option>
                 )
               }
             </Select>
