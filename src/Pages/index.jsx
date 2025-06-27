@@ -5,6 +5,7 @@ import Produto from './Produto';
 import Pagamento from './Pagamento';
 import Carrinho from './Carrinho';
 import CadastroProduto from './CadastroProduto';
+import CadastroPromocoes from './CadastroPromocoes';
 import Me from './Me';
 import Login from './Auth/Login';
 import Cadastrar from './Auth/Cadastrar';
@@ -45,6 +46,10 @@ const Pages = [
   {
     'path': '/cadastro/produtos',
     'component': CadastroProduto
+  },
+  {
+    'path': '/cadastro/promocoes',
+    'component': CadastroPromocoes
   }
 ];
 

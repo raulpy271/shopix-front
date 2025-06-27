@@ -17,7 +17,7 @@ export default function FooterComp() {
               <DropdownItem href="/cadastro/produtos">
                   Registro de produtos
               </DropdownItem>
-              <DropdownItem>
+              <DropdownItem href="/cadastro/promocoes">
                   Registro de promoções 
               </DropdownItem>
               <DropdownItem>
