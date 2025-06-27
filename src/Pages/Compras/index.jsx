@@ -14,7 +14,6 @@ export function CompraItem({item}) {
   const [comment, setComment] = useState("");
   const product = item["product"];
   const submitRevisao = async () => {
-    const textarea = document.getElementById('review-text-area-' + item["id"]);
     const data = {
       rating,
       comment: comment,
@@ -86,7 +85,7 @@ export default function Compras() {
         }
         Promise.all(promises).then(ps => {
           console.log(ordersRes);
-          setOrders(ordersRes);
+          setOrders(ordersRes.reverse());
         });
       })
     }

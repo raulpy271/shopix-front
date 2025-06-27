@@ -1,10 +1,9 @@
 
-import { useMatch } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import api from '@Controllers/api'
 
 
-const loggedPages = ['/', '/compras', '/me'];
+export const loggedPages = ['/', '/compras', '/me', '/produto/*', '/carrinho', '/cadastro/*'];
 
 export async function getMe() {
   const token = Cookies.get('token');
@@ -18,13 +17,15 @@ export async function getMe() {
   }
 }
 
-export function willRedirectToLogin() {
-  const needToBeLogged = loggedPages.filter((page) => useMatch(page) != null).length > 0;
-  if (needToBeLogged) {
-    const token = Cookies.get('token');
-    if (!token) {
-      return true;
-    }
+export async function willRedirectToLogin() {
+  const token = Cookies.get('token');
+  if (!token) {
+    return true;
+  }
+  const me = await getMe();
+  if (!me) {
+    Cookies.remove('token');
+    return true;
   }
   return false;
 }
@@ -33,7 +34,8 @@ export function RedirectComponent() {
   setTimeout(() => window.location = '/login', 2000);
   return (
     <>
-      <h2 className="text-lg font-bold">O usuário não está logado, redirecionando para página de <a href='/login' className='text-sky-400 dark:text-blue-700 hover:text-blue-400'>login</a>.
+      <h2 className="text-lg font-bold h-50">
+        O usuário não está logado, redirecionando para página de <a href='/login' className='text-sky-400 dark:text-blue-700 hover:text-blue-400'>login</a>.
       </h2>
     </>
   )

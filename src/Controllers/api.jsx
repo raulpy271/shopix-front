@@ -82,4 +82,8 @@ export async function createProduct(data) {
   return API.post('/products', data).then(res => res.data);
 }
 
+export async function createPromotion(data) {
+  return API.post('/promotions', data).then(res => res.data);
+}
+
 export default API;
